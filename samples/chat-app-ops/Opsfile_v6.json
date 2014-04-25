@@ -1,0 +1,62 @@
+{
+    "name": "chat-app-ops",
+    "version": "...",
+    "author": "...",
+    "description": "...",
+
+    "operations": {
+        "deploy": {
+            "artifacts": {
+                "node.js": {
+                    "runner": "chef-solo-runner",
+                    "config": {
+                        "files": { "nodejs.tar.gz": "http://s3.amazonaws.com/community-files.opscode.com/cookbook_versions/tarballs/4335/original/nodejs.tar.gz?1376517323" },
+                        "runlist": [ "recipe[nodejs::default]" ],
+                        "nodejs": {
+                            "version": "0.10.26",
+                            "check_sha": false
+                        }
+                    }
+                },
+                "git": {
+                    "runner": "chef-solo-runner",
+                    "config": {
+                        "files": { "git.tar.gz": "http://s3.amazonaws.com/community-files.opscode.com/cookbook_versions/tarballs/6224/original/git20140318-2456-184qsad.?1395184516" },
+                        "runlist": [ "recipe[git::default]" ]
+                    }
+                },
+                "get-app": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "git clone https://git-server/chatapp.git"
+                    }
+                },
+                "start-app": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "export PORT=3000 && node ./chatapp/app.js"
+                    }
+                },
+                "mongodb": {
+                    "runner": "chef-solo-runner",
+                    "config": {
+                        "files": { "mongodb.tar.gz": "http://s3.amazonaws.com/community-files.opscode.com/cookbook_versions/tarballs/6346/original/mongodb.tar.gz?1396423886" },
+                        "runlist": [ "recipe[mongodb::default]" ]
+                    }
+                }
+            },
+            "dependencies": [
+                [ "get-app", "git" ],
+                [ "start-app", "get-app" ],
+                [ "start-app", "node.js" ],
+                [ "start-app", "mongodb" ]
+            ],
+            "postoptest": {
+                "runner": "command-runner",
+                "config": {
+                    "command": "export RESCODE=$(curl -sL -w \"%{http_code}\\n\" \"http://localhost:3000\" -o /dev/null) && [[ \"$RESCODE\" == \"200\" ]] && true || false"
+                }
+            }
+        }
+    }
+}

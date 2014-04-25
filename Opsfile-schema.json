@@ -1,0 +1,152 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Opsfile",
+    "description": "JSON schema definition for Opsfiles",
+    "type": "object",
+    "properties": {
+        "name": {
+            "description": "The Opsfile's name or title",
+            "type": "string"
+        },
+        "version": {
+            "description": "The Opsfile's version",
+            "type": "string"
+        },
+        "author": {
+            "description": "The maintainer of the Opsfile",
+            "type": "string"
+        },
+        "description": {
+            "description": "Short description what the Opsfile does",
+            "type": "string"
+        },
+        "globalconfig": {
+            "description": "Global configuration for all operations specified by the Opsfile",
+            "type": "object"
+        },
+        "hosts": {
+            "description": "Hosts on which operations are run",
+            "type": "object",
+            "patternProperties": {
+                "[a-zA-Z0-9-_.]+": {
+                    "$ref": "#/definitions/host"
+                }
+            },
+            "additionalProperties": false
+        },
+        "operations": {
+            "description": "Operations to be run",
+            "type": "object",
+            "properties": {
+                "deploy": {
+                    "$ref": "#/definitions/operation"
+                },
+                "undeploy": {
+                    "$ref": "#/definitions/operation"
+                },
+                "expose": {
+                    "$ref": "#/definitions/operation"
+                },
+                "unexpose": {
+                    "$ref": "#/definitions/operation"
+                }
+            },
+            "patternProperties": {
+                "[a-zA-Z0-9-_.]+": {
+                    "$ref": "#/definitions/operation"
+                }
+            },
+            "additionalProperties": false,
+            "required": [ "deploy" ]
+        }
+    },
+    "required": [ "name", "version", "author", "description", "operations" ],
+    "definitions": {
+        "host": {
+            "type": "object",
+            "properties": {
+                "existing": {
+                    "description": "Indicator whether the host is existing already",
+                    "type": "boolean"
+                },
+                "access": {
+                    "description": "Mechanism to access the host, e.g., 'ssh'",
+                    "type": "string"
+                }
+            }
+        },
+        "operation": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "description": "Comment on the operation",
+                    "type": "string"
+                },
+                "config": {
+                    "description": "Operation-specific configuration; it gets merged with the gobal configuration",
+                    "type": "object"
+                },
+                "artifacts": {
+                    "description": "Artifacts that implement the operation",
+                    "type": "object",
+                    "patternProperties": {
+                        "[a-zA-Z0-9-_.]+": {
+                            "$ref": "#/definitions/artifact"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "dependencies": {
+                    "description": "List of artifact dependencies",
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": { "type": "string" },
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "uniqueItems": true
+                    }
+                },
+                "postoptest": {
+                    "description": "Test to be executed after operation run to confirm success of run",
+                    "type": "object",
+                    "$ref": "#/definitions/artifact"
+                }
+            },
+            "required": [ "artifacts" ]
+        },
+        "artifact": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "description": "Name of the host on which artifact is run",
+                    "type": "string"
+                },
+                "runner": {
+                    "description": "Name of the runner to be used to run the artifact",
+                    "type": "string"
+                },
+                "comment": {
+                    "description": "Comment on the artifact",
+                    "type": "string"
+                },
+                "config": {
+                    "description": "Artifact-specific configuration; it gets merged with the global and operation-specific configuration",
+                    "type": "object"
+                },
+                "prerun": {
+                    "description": "Some JavaScript code to be executed before running the artifact, e.g., to transform configuration parameters",
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1
+                },
+                "postrun": {
+                    "description": "Some JavaScript code to be executed after running the artifact",
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1
+                }
+            }
+        }
+    }
+}

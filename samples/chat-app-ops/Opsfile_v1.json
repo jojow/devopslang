@@ -1,0 +1,14 @@
+{
+    "name": "chat-app-ops",
+    "version": "0.1",
+    "author": "Johannes <wettinger@iaas.uni-stuttgart.org>",
+    "description": "Automated deployment and operations for the chat application",
+
+    "operations": {
+        "deploy": {
+            "artifacts": {
+                "chat-app": {}
+            }
+        }
+    }
+}

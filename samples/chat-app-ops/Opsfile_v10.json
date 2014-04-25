@@ -1,0 +1,119 @@
+{
+    "name": "chat-app-ops",
+    "version": "...",
+    "author": "...",
+    "description": "...",
+
+    "globalconfig": {
+        "chatapp": {
+            "port": 3000,
+            "https_only": true
+        },
+        "aws": {
+            "access-key-id": "TBD",
+            "secret-access-key": "TBD",
+            "vm-props": {
+                "app-vm": {
+                    "size": "m1.small"
+                },
+                "db-vm": {
+                    "size": "m1.large"
+                }
+            },
+            "sec-groups": {
+                "chat": {
+                    "members": [ "app-vm", "db-vm" ]
+                }
+            }
+        }
+    },
+
+    "hosts": {
+        "sandbox": {
+            "existing": true,
+            "access": "js-sandbox"
+        },
+        "app-vm": {},
+        "db-vm": {}
+    },
+
+    "operations": {
+        "deploy": {
+            "artifacts": {
+                "provision-app-vm": {
+                    "host": "sandbox",
+                    "runner": "js-runner",
+                    "config": {
+                        "files": { "ec2-provision.js": "http://ops-artifact-store/aws-management/ec2-provision.js" },
+                        "include": [ "ec2-provision.js" ]
+                    },
+                    "prerun": [
+                        "// some sandboxed JavaScript code to transform and/or map config parameters...",
+                        "config['instance-type'] = globalconfig.aws['vm-props']['app-vm'].size;"
+                    ]
+                },
+                "provision-db-vm": {
+                    "host": "sandbox",
+                    "runner": "js-runner",
+                    "config": {
+                        "files": { "ec2-provision.js": "http://ops-artifact-store/aws-management/ec2-provision.js" },
+                        "include": [ "ec2-provision.js" ]
+                    },
+                    "prerun": [
+                        "config['instance-type'] = globalconfig.aws['vm-props']['db-vm'].size;"
+                    ]
+                },
+                "deploy-app-core": {
+                    "host": "sandbox",
+                    "runner": "opsfile-runner",
+                    "config": {
+                        "Opsfile": "git://git-server/chatapp.git/core/Opsfile",
+                        "operation": "deploy"
+                    }
+                },
+                "mongodb": {
+                    "host": "db-vm",
+                    "runner": "chef-solo-runner",
+                    "config": {
+                        "files": { "mongodb.tar.gz": "http://s3.amazonaws.com/community-files.opscode.com/cookbook_versions/tarballs/6346/original/mongodb.tar.gz?1396423886" },
+                        "runlist": [ "recipe[mongodb::default]" ]
+                    }
+                }
+            },
+            "dependencies": [
+                [ "mongodb", "provision-db-vm" ],
+                [ "deploy-app-core", "provision-app-vm" ],
+                [ "deploy-app-core", "mongodb" ]
+            ],
+            "postoptest": {
+                "host": "sandbox",
+                "runner": "js-runner",
+                "config": {
+                    "files": { "postdeploytest.js": "git://git-server/chatapp.git/test/post-deployment.js" },
+                    "include": [ "postdeploytest.js" ]
+                }
+            }
+        },
+        "expose": {
+            "artifacts": {
+                "update-sec-group": {
+                    "host": "sandbox",
+                    "runner": "js-runner",
+                    "config": {
+                        "aws": {
+                            "sec-groups": {
+                                "chat": {
+                                    "inbound": [
+                                        { "protocol": "TCP", "port": 80 }
+                                    ]
+                                }
+                            }
+                        },
+                        "files": { "ec2-update-secgroup.js": "http://ops-artifact-store/aws-management/ec2-update-secgroup.js" },
+                        "include": [ "ec2-update-secgroup.js" ]
+                    }
+                }
+            }
+        }
+    }
+}

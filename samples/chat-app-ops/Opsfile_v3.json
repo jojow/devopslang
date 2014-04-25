@@ -1,0 +1,30 @@
+{
+    "name": "chat-app-ops",
+    "version": "...",
+    "author": "...",
+    "description": "...",
+
+    "operations": {
+        "deploy": {
+            "artifacts": {
+                "chat-app": {
+                    "runner": "command-runner",
+                    "comment": "Node.js 0.10 or better must be installed",
+                    "config": {
+                        "command": "node app.js"
+                    }
+                },
+                "mongodb": {
+                    "runner": "command-runner",
+                    "comment": "MongoDB 2.6 or better must be installed",
+                    "config": {
+                        "command": "mongod"
+                    }
+                }
+            },
+            "dependencies": [
+                [ "chat-app", "mongodb" ]
+            ]
+        }
+    }
+}
