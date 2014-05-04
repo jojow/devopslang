@@ -1,27 +1,27 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Opsfile",
-    "description": "JSON schema definition for Opsfiles",
+    "title": "Devopsfile",
+    "description": "JSON schema definition for Devopsfiles",
     "type": "object",
     "properties": {
         "name": {
-            "description": "The Opsfile's name or title",
+            "description": "The Devopsfile's name or title",
             "type": "string"
         },
         "version": {
-            "description": "The Opsfile's version",
+            "description": "The Devopsfile's version",
             "type": "string"
         },
         "author": {
-            "description": "The maintainer of the Opsfile",
+            "description": "The maintainer of the Devopsfile",
             "type": "string"
         },
         "description": {
-            "description": "Short description what the Opsfile does",
+            "description": "Short description what the Devopsfile does",
             "type": "string"
         },
         "globalconfig": {
-            "description": "Global configuration for all operations specified by the Opsfile",
+            "description": "Global configuration for all operations specified by the Devopsfile",
             "type": "object"
         },
         "hosts": {
