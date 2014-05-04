@@ -119,7 +119,7 @@
             "type": "object",
             "properties": {
                 "host": {
-                    "description": "Name of the host on which artifact is run",
+                    "description": "Name of the host on which artifact is run; if no host is defined for artifact, it runs on default host; if no default host is defined in Devopsfile, the invoker of the Devopsfile may decide where to run the artifact (e.g., on localhost)",
                     "type": "string"
                 },
                 "runner": {
