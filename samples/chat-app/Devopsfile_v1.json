@@ -1,5 +1,5 @@
 {
-    "name": "chat-app-ops",
+    "name": "chat-app",
     "version": "0.1",
     "author": "Johannes <wettinger@iaas.uni-stuttgart.org>",
     "description": "Automated deployment and operations for the chat application",

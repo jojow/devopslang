@@ -65,9 +65,9 @@
                 },
                 "deploy-app-core": {
                     "host": "sandbox",
-                    "runner": "opsfile-runner",
+                    "runner": "operation-runner",
                     "config": {
-                        "Opsfile": "git://git-server/chatapp.git/core/Opsfile",
+                        "Opsfile": "git://git-server/chatapp.git/core/Devopsfile",
                         "operation": "deploy"
                     }
                 },

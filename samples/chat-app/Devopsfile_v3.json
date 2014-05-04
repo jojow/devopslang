@@ -9,16 +9,16 @@
             "artifacts": {
                 "chat-app": {
                     "runner": "command-runner",
-                    "comment": "Node.js 0.10 or better must be installed; git must be installed",
+                    "comment": "Node.js 0.10 or better must be installed",
                     "config": {
-                        "command": "git clone https://git-server/chatapp.git && cd chatapp && node app.js"
+                        "command": "npm install && node app.js"
                     }
                 },
                 "mongodb": {
                     "runner": "command-runner",
                     "comment": "MongoDB 2.6 or better must be installed",
                     "config": {
-                        "command": "mongod --syslog --maxConns 10"
+                        "command": "mongod"
                     }
                 }
             },

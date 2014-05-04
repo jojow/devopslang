@@ -28,7 +28,7 @@
                 "get-app": {
                     "runner": "command-runner",
                     "config": {
-                        "command": "git clone https://git-server/chatapp.git"
+                        "command": "git clone https://git-server/chatapp.git && cd chatapp && npm install"
                     }
                 },
                 "start-app": {

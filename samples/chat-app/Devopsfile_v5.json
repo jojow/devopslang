@@ -18,7 +18,7 @@
                     "runner": "command-runner",
                     "comment": "git must be installed",
                     "config": {
-                        "command": "git clone https://git-server/chatapp.git"
+                        "command": "git clone https://git-server/chatapp.git && cd chatapp && npm install"
                     }
                 },
                 "start-app": {

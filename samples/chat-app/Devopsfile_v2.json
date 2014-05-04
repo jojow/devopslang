@@ -11,7 +11,7 @@
                     "runner": "command-runner",
                     "comment": "Node.js 0.10 or better must be installed",
                     "config": {
-                        "command": "node app.js"
+                        "command": "npm install && node app.js"
                     }
                 }
             }
