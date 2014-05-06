@@ -1,0 +1,84 @@
+{
+    "name": "chat-app",
+    "version": "...",
+    "author": "...",
+    "description": "...",
+
+    "operations": {
+        "build": {
+            "artifacts": {
+                "get-app": {
+                    "runner": "command-runner",
+                    "comment": "git must be installed",
+                    "config": {
+                        "command": "git clone https://git-server/chatapp.git"
+                    }
+                },
+                "install-deps": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "npm install",
+                        "cwd": "./chatapp"
+                    }
+                }
+            },
+            "dependencies": [
+                [ "install-deps", "get-app" ]
+            ]
+        },
+        "start": {
+            "artifacts": {
+                "chat-app": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "node app.js",
+                        "cwd": "./chatapp"
+                    }
+                },
+                "mongodb": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "mongod --syslog --maxConns 10"
+                    }
+                }
+            },
+            "dependencies": [
+                [ "chat-app", "mongodb" ]
+            ]
+        },
+        "deploy": {
+            "artifacts": {
+                "deploy-nodejs": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "sudo add-apt-repository ppa:chris-lea/node.js && sudo apt-get update && sudo apt-get install python-software-properties python g++ make nodejs"
+                    }
+                },
+                "deploy-mongodb": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list && sudo apt-get update && sudo apt-get install mongodb-org"
+                    }
+                },
+                "build": {
+                    "runner": "operation-runner",
+                    "config": {
+                        "operation": "build"
+                    }
+                },
+                "start": {
+                    "runner": "operation-runner",
+                    "config": {
+                        "operation": "start"
+                    }
+                }
+            },
+            "sequence": [
+                "deploy-nodejs",
+                "deploy-mongodb",
+                "build",
+                "start"
+            ]
+        }
+    }
+}
