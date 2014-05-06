@@ -112,7 +112,8 @@
                     "config": {
                         "files": { "mongodb.tar.gz": "http://s3.amazonaws.com/community-files.opscode.com/cookbook_versions/tarballs/6346/original/mongodb.tar.gz?1396423886" },
                         "runlist": [ "recipe[mongodb::default]" ]
-                    }
+                    },
+                    "mergeconfig": false
                 },
                 "run-app": {
                     "host": "app-vm",

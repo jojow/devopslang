@@ -82,6 +82,10 @@
         "operation": {
             "type": "object",
             "properties": {
+                "host": {
+                    "description": "Name of the default host for artifacts of this operation",
+                    "type": "string"
+                },
                 "comment": {
                     "description": "Comment on the operation",
                     "type": "string"
@@ -89,6 +93,10 @@
                 "config": {
                     "description": "Operation-specific configuration; it gets merged with the gobal configuration",
                     "type": "object"
+                },
+                "mergeconfig": {
+                    "description": "Indicator whether the operation-specific configuration should be merged with the gobal configuration; implicitly true by default",
+                    "type": "boolean"
                 },
                 "artifacts": {
                     "description": "Artifacts that implement the operation",
@@ -129,7 +137,7 @@
             "type": "object",
             "properties": {
                 "host": {
-                    "description": "Name of the host on which artifact is run; if no host is defined for artifact, it runs on default host; if no default host is defined in Devopsfile, the invoker of the Devopsfile or the particular operation may determine where to run the artifact (e.g., on localhost, in a sandbox, etc.)",
+                    "description": "Name of the host on which the artifact is run; if no host is defined for artifact, it runs on default host; if no default host is defined in Devopsfile, the invoker of the Devopsfile or the particular operation may determine where to run the artifact (e.g., on localhost, in a sandbox, etc.)",
                     "type": "string"
                 },
                 "runner": {
@@ -143,6 +151,10 @@
                 "config": {
                     "description": "Artifact-specific configuration; it gets merged with the global and operation-specific configuration",
                     "type": "object"
+                },
+                "mergeconfig": {
+                    "description": "Indicator whether the artifact-specific configuration should be merged with the gobal and operation-specific configuration; implicitly true by default",
+                    "type": "boolean"
                 },
                 "prerun": {
                     "description": "Some JavaScript code to be executed before running the artifact, e.g., to transform configuration parameters",
