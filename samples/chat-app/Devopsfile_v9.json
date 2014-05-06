@@ -1,5 +1,5 @@
 {
-    "name": "chat-app-ops",
+    "name": "chat-app",
     "version": "...",
     "author": "...",
     "description": "...",
@@ -29,15 +29,39 @@
     },
 
     "hosts": {
-        "sandbox": {
-            "existing": true,
-            "access": "js-sandbox"
-        },
         "app-vm": {},
         "db-vm": {}
     },
 
     "operations": {
+        "run": {
+            "artifacts": {
+                "get-app": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "sh ./scripts/get-app.sh"
+                    }
+                },
+                "wire-app": {
+                    "runner": "ruby-runner",
+                    "config": {
+                        "files": { "connect-app-to-db.rb": "./scripts/connect-app-to-db.rb" },
+                        "mainscript": "connect-app-to-db.rb"
+                    }
+                },
+                "run-app": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "sh ./scripts/run-app.sh"
+                    }
+                }
+            },
+            "sequence": [
+                "get-app",
+                "wire-app",
+                "run-app"
+            ]
+        },
         "deploy": {
             "config": {
                 "nodejs": {
@@ -46,9 +70,9 @@
             },
             "artifacts": {
                 "provision-app-vm": {
-                    "host": "sandbox",
-                    "runner": "js-runner",
+                    "runner": "js-sandbox-runner",
                     "config": {
+                        "hostname": "app-vm",
                         "files": { "ec2-provision.js": "http://ops-artifact-store/aws-management/ec2-provision.js" },
                         "include": [ "ec2-provision.js" ]
                     },
@@ -58,9 +82,9 @@
                     ]
                 },
                 "provision-db-vm": {
-                    "host": "sandbox",
-                    "runner": "js-runner",
+                    "runner": "js-sandbox-runner",
                     "config": {
+                        "hostname": "db-vm",
                         "files": { "ec2-provision.js": "http://ops-artifact-store/aws-management/ec2-provision.js" },
                         "include": [ "ec2-provision.js" ]
                     },
@@ -68,7 +92,7 @@
                         "config['instance-type'] = globalconfig.aws['vm-props']['db-vm'].size;"
                     ]
                 },
-                "node.js": {
+                "deploy-nodejs": {
                     "host": "app-vm",
                     "runner": "chef-solo-runner",
                     "config": {
@@ -79,43 +103,32 @@
                         }
                     }
                 },
-                "wire-app": {
-                    "host": "app-vm",
-                    "runner": "ruby-runner",
-                    "config": {
-                        "files": { "connect-app-to-db.rb": "git://git-server/chatapp.git/scripts/connect-app-to-db.rb" },
-                        "mainscript": "connect-app-to-db.rb"
-                    }
-                },
-                "run-app": {
-                    "host": "app-vm",
-                    "runner": "command-runner",
-                    "config": {
-                        "files": { "run-app.sh": "git://git-server/chatapp.git/scripts/run-app.sh" },
-                        "command": "sh ./run-app.sh"
-                    }
-                },
-                "mongodb": {
+                "deploy-mongodb": {
                     "host": "db-vm",
                     "runner": "chef-solo-runner",
                     "config": {
                         "files": { "mongodb.tar.gz": "http://s3.amazonaws.com/community-files.opscode.com/cookbook_versions/tarballs/6346/original/mongodb.tar.gz?1396423886" },
                         "runlist": [ "recipe[mongodb::default]" ]
                     }
+                },
+                "run-app": {
+                    "host": "app-vm",
+                    "runner": "operation-runner",
+                    "config": {
+                        "operation": "run"
+                    }
                 }
             },
             "dependencies": [
-                [ "node.js", "provision-app-vm" ],
-                [ "mongodb", "provision-db-vm" ],
-                [ "wire-app", "node.js" ],
-                [ "wire-app", "mongodb" ],
-                [ "run-app", "wire-app" ]
+                [ "deploy-nodejs", "provision-app-vm" ],
+                [ "deploy-mongodb", "provision-db-vm" ],
+                [ "run-app", "deploy-nodejs" ],
+                [ "run-app", "deploy-mongodb" ]
             ],
             "postoptest": {
-                "host": "sandbox",
-                "runner": "js-runner",
+                "runner": "js-sandbox-runner",
                 "config": {
-                    "files": { "postdeploytest.js": "git://git-server/chatapp.git/test/post-deployment.js" },
+                    "files": { "postdeploytest.js": "./test/post-deployment.js" },
                     "include": [ "postdeploytest.js" ]
                 }
             }
@@ -123,8 +136,7 @@
         "expose": {
             "artifacts": {
                 "update-sec-group": {
-                    "host": "sandbox",
-                    "runner": "js-runner",
+                    "runner": "js-sandbox-runner",
                     "config": {
                         "aws": {
                             "sec-groups": {

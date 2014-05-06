@@ -1,5 +1,5 @@
 {
-    "name": "chat-app-ops",
+    "name": "chat-app",
     "version": "...",
     "author": "...",
     "description": "...",
@@ -12,6 +12,16 @@
     },
 
     "operations": {
+        "run": {
+            "artifacts": {
+                "run-app": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "sh ./scripts/run-app.sh"
+                    }
+                }
+            }
+        },
         "deploy": {
             "config": {
                 "nodejs": {
@@ -19,7 +29,7 @@
                 }
             },
             "artifacts": {
-                "node.js": {
+                "deploy-nodejs": {
                     "runner": "chef-solo-runner",
                     "config": {
                         "files": { "nodejs.tar.gz": "http://s3.amazonaws.com/community-files.opscode.com/cookbook_versions/tarballs/4335/original/nodejs.tar.gz?1376517323" },
@@ -29,24 +39,24 @@
                         }
                     }
                 },
-                "run-app": {
-                    "runner": "command-runner",
-                    "config": {
-                        "files": { "run-app.sh": "git://git-server/chatapp.git/scripts/run-app.sh" },
-                        "command": "sh ./run-app.sh"
-                    }
-                },
-                "mongodb": {
+                "deploy-mongodb": {
                     "runner": "chef-solo-runner",
                     "config": {
                         "files": { "mongodb.tar.gz": "http://s3.amazonaws.com/community-files.opscode.com/cookbook_versions/tarballs/6346/original/mongodb.tar.gz?1396423886" },
                         "runlist": [ "recipe[mongodb::default]" ]
                     }
+                },
+                "run-app": {
+                    "runner": "operation-runner",
+                    "config": {
+                        "operation": "run"
+                    }
                 }
             },
-            "dependencies": [
-                [ "run-app", "node.js" ],
-                [ "run-app", "mongodb" ]
+            "sequence": [
+                "deploy-nodejs",
+                "deploy-mongodb",
+                "run-app"
             ],
             "postoptest": {
                 "runner": "command-runner",

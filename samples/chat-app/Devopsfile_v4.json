@@ -1,17 +1,40 @@
 {
-    "name": "chat-app-ops",
+    "name": "chat-app",
     "version": "...",
     "author": "...",
     "description": "...",
 
     "operations": {
-        "deploy": {
+        "build": {
+            "artifacts": {
+                "get-app": {
+                    "runner": "command-runner",
+                    "comment": "git must be installed",
+                    "config": {
+                        "command": "git clone https://git-server/chatapp.git"
+                    }
+                },
+                "install-deps": {
+                    "runner": "command-runner",
+                    "comment": "Node.js 0.10 or better must be installed",
+                    "config": {
+                        "command": "npm install",
+                        "cwd": "./chatapp"
+                    }
+                }
+            },
+            "dependencies": [
+                [ "install-deps", "get-app" ]
+            ]
+        },
+        "start": {
             "artifacts": {
                 "chat-app": {
                     "runner": "command-runner",
-                    "comment": "Node.js 0.10 or better must be installed; git must be installed",
+                    "comment": "Node.js 0.10 or better must be installed",
                     "config": {
-                        "command": "git clone https://git-server/chatapp.git && cd chatapp && npm install && node app.js"
+                        "command": "node app.js",
+                        "cwd": "./chatapp"
                     }
                 },
                 "mongodb": {
@@ -24,6 +47,25 @@
             },
             "dependencies": [
                 [ "chat-app", "mongodb" ]
+            ]
+        },
+        "deploy": {
+            "artifacts": {
+                "build": {
+                    "runner": "operation-runner",
+                    "config": {
+                        "operation": "build"
+                    }
+                },
+                "start": {
+                    "runner": "operation-runner",
+                    "config": {
+                        "operation": "start"
+                    }
+                }
+            },
+            "dependencies": [
+                [ "start", "build" ]
             ]
         }
     }

@@ -5,9 +5,25 @@
     "description": "Automated deployment and operations for the chat application",
 
     "operations": {
+        "start": {
+            "artifacts": {
+                "chat-app": {
+                    "runner": "command-runner",
+                    "comment": "Node.js 0.10 or better must be installed",
+                    "config": {
+                        "command": "node app.js"
+                    }
+                }
+            }
+        },
         "deploy": {
             "artifacts": {
-                "chat-app": {}
+                "start": {
+                    "runner": "operation-runner",
+                    "config": {
+                        "operation": "start"
+                    }
+                }
             }
         }
     }

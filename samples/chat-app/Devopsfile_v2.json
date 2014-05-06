@@ -1,20 +1,50 @@
 {
-    "name": "chat-app-ops",
+    "name": "chat-app",
     "version": "...",
     "author": "...",
     "description": "...",
 
     "operations": {
-        "deploy": {
+        "build": {
+            "artifacts": {
+                "install-deps": {
+                    "runner": "command-runner",
+                    "comment": "Node.js 0.10 or better must be installed",
+                    "config": {
+                        "command": "npm install"
+                    }
+                }
+            }
+        },
+        "start": {
             "artifacts": {
                 "chat-app": {
                     "runner": "command-runner",
                     "comment": "Node.js 0.10 or better must be installed",
                     "config": {
-                        "command": "npm install && node app.js"
+                        "command": "node app.js"
                     }
                 }
             }
+        },
+        "deploy": {
+            "artifacts": {
+                "build": {
+                    "runner": "operation-runner",
+                    "config": {
+                        "operation": "build"
+                    }
+                },
+                "start": {
+                    "runner": "operation-runner",
+                    "config": {
+                        "operation": "start"
+                    }
+                }
+            },
+            "dependencies": [
+                [ "start", "build" ]
+            ]
         }
     }
 }

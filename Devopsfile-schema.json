@@ -65,6 +65,10 @@
         "host": {
             "type": "object",
             "properties": {
+                "default": {
+                    "description": "Indicator whether this is the default host",
+                    "type": "boolean"
+                },
                 "existing": {
                     "description": "Indicator whether the host is existing already",
                     "type": "boolean"
@@ -107,6 +111,12 @@
                         "uniqueItems": true
                     }
                 },
+                "sequence": {
+                    "description": "Sequential execution order of artifacts",
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1
+                },
                 "postoptest": {
                     "description": "Test to be executed after operation run to confirm success of run",
                     "type": "object",
@@ -119,7 +129,7 @@
             "type": "object",
             "properties": {
                 "host": {
-                    "description": "Name of the host on which artifact is run; if no host is defined for artifact, it runs on default host; if no default host is defined in Devopsfile, the invoker of the Devopsfile may decide where to run the artifact (e.g., on localhost)",
+                    "description": "Name of the host on which artifact is run; if no host is defined for artifact, it runs on default host; if no default host is defined in Devopsfile, the invoker of the Devopsfile or the particular operation may determine where to run the artifact (e.g., on localhost, in a sandbox, etc.)",
                     "type": "string"
                 },
                 "runner": {

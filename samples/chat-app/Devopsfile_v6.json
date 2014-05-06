@@ -1,13 +1,61 @@
 {
-    "name": "chat-app-ops",
+    "name": "chat-app",
     "version": "...",
     "author": "...",
     "description": "...",
 
     "operations": {
+        "build": {
+            "artifacts": {
+                "get-app": {
+                    "runner": "command-runner",
+                    "comment": "git must be installed",
+                    "config": {
+                        "command": "git clone https://git-server/chatapp.git"
+                    }
+                },
+                "install-deps": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "npm install",
+                        "cwd": "./chatapp"
+                    }
+                }
+            },
+            "dependencies": [
+                [ "install-deps", "get-app" ]
+            ]
+        },
+        "start": {
+            "artifacts": {
+                "chat-app": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "export PORT=3000 && node app.js",
+                        "cwd": "./chatapp"
+                    }
+                },
+                "mongodb": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "mongod --syslog --maxConns 10"
+                    }
+                }
+            },
+            "dependencies": [
+                [ "chat-app", "mongodb" ]
+            ]
+        },
         "deploy": {
             "artifacts": {
-                "node.js": {
+                "deploy-git": {
+                    "runner": "chef-solo-runner",
+                    "config": {
+                        "files": { "git.tar.gz": "http://s3.amazonaws.com/community-files.opscode.com/cookbook_versions/tarballs/6224/original/git20140318-2456-184qsad.?1395184516" },
+                        "runlist": [ "recipe[git::default]" ]
+                    }
+                },
+                "deploy-nodejs": {
                     "runner": "chef-solo-runner",
                     "config": {
                         "files": { "nodejs.tar.gz": "http://s3.amazonaws.com/community-files.opscode.com/cookbook_versions/tarballs/4335/original/nodejs.tar.gz?1376517323" },
@@ -18,38 +66,32 @@
                         }
                     }
                 },
-                "git": {
-                    "runner": "chef-solo-runner",
-                    "config": {
-                        "files": { "git.tar.gz": "http://s3.amazonaws.com/community-files.opscode.com/cookbook_versions/tarballs/6224/original/git20140318-2456-184qsad.?1395184516" },
-                        "runlist": [ "recipe[git::default]" ]
-                    }
-                },
-                "get-app": {
-                    "runner": "command-runner",
-                    "config": {
-                        "command": "git clone https://git-server/chatapp.git && cd chatapp && npm install"
-                    }
-                },
-                "start-app": {
-                    "runner": "command-runner",
-                    "config": {
-                        "command": "export PORT=3000 && node ./chatapp/app.js"
-                    }
-                },
-                "mongodb": {
+                "deploy-mongodb": {
                     "runner": "chef-solo-runner",
                     "config": {
                         "files": { "mongodb.tar.gz": "http://s3.amazonaws.com/community-files.opscode.com/cookbook_versions/tarballs/6346/original/mongodb.tar.gz?1396423886" },
                         "runlist": [ "recipe[mongodb::default]" ]
                     }
+                },
+                "build": {
+                    "runner": "operation-runner",
+                    "config": {
+                        "operation": "build"
+                    }
+                },
+                "start": {
+                    "runner": "operation-runner",
+                    "config": {
+                        "operation": "start"
+                    }
                 }
             },
-            "dependencies": [
-                [ "get-app", "git" ],
-                [ "start-app", "get-app" ],
-                [ "start-app", "node.js" ],
-                [ "start-app", "mongodb" ]
+            "sequence": [
+                "deploy-git",
+                "deploy-nodejs",
+                "deploy-mongodb",
+                "build",
+                "start"
             ],
             "postoptest": {
                 "runner": "command-runner",
