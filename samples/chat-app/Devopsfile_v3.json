@@ -55,7 +55,7 @@
                 }
             },
             "dependencies": [
-                [ "chat-app", "mongodb" ]
+                [ "chatapp", "mongodb" ]
             ]
         },
         "deploy": {
