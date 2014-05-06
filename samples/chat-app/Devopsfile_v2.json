@@ -1,5 +1,5 @@
 {
-    "name": "chat-app",
+    "name": "chatapp",
     "version": "...",
     "author": "...",
     "description": "...",
@@ -18,7 +18,7 @@
         },
         "start": {
             "artifacts": {
-                "chat-app": {
+                "chatapp": {
                     "runner": "command-runner",
                     "comment": "Node.js 0.10 or better must be installed",
                     "config": {
@@ -29,13 +29,13 @@
         },
         "deploy": {
             "artifacts": {
-                "build": {
+                "build-app": {
                     "runner": "operation-runner",
                     "config": {
                         "operation": "build"
                     }
                 },
-                "start": {
+                "start-app": {
                     "runner": "operation-runner",
                     "config": {
                         "operation": "start"
@@ -43,7 +43,7 @@
                 }
             },
             "dependencies": [
-                [ "start", "build" ]
+                [ "start-app", "build-app" ]
             ]
         }
     }

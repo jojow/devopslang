@@ -1,5 +1,5 @@
 {
-    "name": "chat-app",
+    "name": "chatapp",
     "version": "...",
     "author": "...",
     "description": "...",
@@ -20,15 +20,32 @@
                         "command": "npm install",
                         "cwd": "./chatapp"
                     }
+                },
+                "run-tests": {
+                    "runner": "operation-runner",
+                    "config": {
+                        "operation": "test"
+                    }
                 }
             },
             "dependencies": [
-                [ "install-deps", "get-app" ]
+                [ "install-deps", "get-app" ],
+                [ "run-tests", "install-deps" ]
             ]
+        },
+        "test": {
+            "artifacts": {
+                "unit-tests": {
+                    "runner": "command-runner",
+                    "config": {
+                        "command": "./node_modules/mocha/bin/mocha"
+                    }
+                }
+            }
         },
         "start": {
             "artifacts": {
-                "chat-app": {
+                "chatapp": {
                     "runner": "command-runner",
                     "config": {
                         "command": "export PORT=3000 && node app.js",
@@ -74,13 +91,13 @@
                     },
                     "mergeconfig": false
                 },
-                "build": {
+                "build-app": {
                     "runner": "operation-runner",
                     "config": {
                         "operation": "build"
                     }
                 },
-                "start": {
+                "start-app": {
                     "runner": "operation-runner",
                     "config": {
                         "operation": "start"
@@ -91,8 +108,8 @@
                 "deploy-git",
                 "deploy-nodejs",
                 "deploy-mongodb",
-                "build",
-                "start"
+                "build-app",
+                "start-app"
             ],
             "postoptest": {
                 "runner": "command-runner",

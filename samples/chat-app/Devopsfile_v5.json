@@ -1,5 +1,5 @@
 {
-    "name": "chat-app",
+    "name": "chatapp",
     "version": "...",
     "author": "...",
     "description": "...",
@@ -20,15 +20,33 @@
                         "command": "npm install",
                         "cwd": "./chatapp"
                     }
+                },
+                "run-tests": {
+                    "runner": "operation-runner",
+                    "config": {
+                        "operation": "test"
+                    }
                 }
             },
             "dependencies": [
-                [ "install-deps", "get-app" ]
+                [ "install-deps", "get-app" ],
+                [ "run-tests", "install-deps" ]
             ]
+        },
+        "test": {
+            "artifacts": {
+                "unit-tests": {
+                    "runner": "command-runner",
+                    "comment": "Node.js 0.10 or better must be installed",
+                    "config": {
+                        "command": "./node_modules/mocha/bin/mocha"
+                    }
+                }
+            }
         },
         "start": {
             "artifacts": {
-                "chat-app": {
+                "chatapp": {
                     "runner": "command-runner",
                     "config": {
                         "command": "node app.js",
@@ -60,13 +78,13 @@
                         "command": "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list && sudo apt-get update && sudo apt-get install mongodb-org"
                     }
                 },
-                "build": {
+                "build-app": {
                     "runner": "operation-runner",
                     "config": {
                         "operation": "build"
                     }
                 },
-                "start": {
+                "start-app": {
                     "runner": "operation-runner",
                     "config": {
                         "operation": "start"
@@ -76,8 +94,8 @@
             "sequence": [
                 "deploy-nodejs",
                 "deploy-mongodb",
-                "build",
-                "start"
+                "build-app",
+                "start-app"
             ]
         }
     }

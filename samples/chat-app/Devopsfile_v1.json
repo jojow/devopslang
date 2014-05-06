@@ -1,5 +1,5 @@
 {
-    "name": "chat-app",
+    "name": "chatapp",
     "version": "0.1",
     "author": "Johannes <wettinger@iaas.uni-stuttgart.org>",
     "description": "Automated deployment and operations for the chat application",
@@ -7,7 +7,7 @@
     "operations": {
         "start": {
             "artifacts": {
-                "chat-app": {
+                "chatapp": {
                     "runner": "command-runner",
                     "comment": "Node.js 0.10 or better must be installed",
                     "config": {
@@ -18,7 +18,7 @@
         },
         "deploy": {
             "artifacts": {
-                "start": {
+                "start-app": {
                     "runner": "operation-runner",
                     "config": {
                         "operation": "start"
