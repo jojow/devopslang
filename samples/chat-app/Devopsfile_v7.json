@@ -13,7 +13,7 @@
 
     "operations": {
         "run": {
-            "artifacts": {
+            "actions": {
                 "run-app": {
                     "runner": "command-runner",
                     "config": {
@@ -28,7 +28,7 @@
                     "version": "0.10.26"
                 }
             },
-            "artifacts": {
+            "actions": {
                 "deploy-nodejs": {
                     "runner": "chef-solo-runner",
                     "config": {

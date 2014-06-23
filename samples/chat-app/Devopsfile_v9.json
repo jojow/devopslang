@@ -35,7 +35,7 @@
 
     "operations": {
         "run": {
-            "artifacts": {
+            "actions": {
                 "get-app": {
                     "runner": "command-runner",
                     "config": {
@@ -68,7 +68,7 @@
                     "version": "0.10.26"
                 }
             },
-            "artifacts": {
+            "actions": {
                 "provision-app-vm": {
                     "runner": "js-sandbox-runner",
                     "config": {
@@ -135,7 +135,7 @@
             }
         },
         "expose": {
-            "artifacts": {
+            "actions": {
                 "update-sec-group": {
                     "runner": "js-sandbox-runner",
                     "config": {

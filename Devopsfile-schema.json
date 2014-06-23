@@ -83,7 +83,7 @@
             "type": "object",
             "properties": {
                 "host": {
-                    "description": "Name of the default host for artifacts of this operation",
+                    "description": "Name of the default host for actions of this operation",
                     "type": "string"
                 },
                 "comment": {
@@ -98,18 +98,18 @@
                     "description": "Indicator whether the operation-specific configuration should be merged with the gobal configuration; implicitly true by default",
                     "type": "boolean"
                 },
-                "artifacts": {
-                    "description": "Artifacts that implement the operation",
+                "actions": {
+                    "description": "Actions that implement the operation",
                     "type": "object",
                     "patternProperties": {
                         "[a-zA-Z0-9-_.]+": {
-                            "$ref": "#/definitions/artifact"
+                            "$ref": "#/definitions/action"
                         }
                     },
                     "additionalProperties": false
                 },
                 "dependencies": {
-                    "description": "List of artifact dependencies",
+                    "description": "List of action dependencies",
                     "type": "array",
                     "items": {
                         "type": "array",
@@ -120,7 +120,7 @@
                     }
                 },
                 "sequence": {
-                    "description": "Sequential execution order of artifacts",
+                    "description": "Sequential execution order of actions",
                     "type": "array",
                     "items": { "type": "string" },
                     "minItems": 1
@@ -128,42 +128,42 @@
                 "postoptest": {
                     "description": "Test to be executed after operation run to confirm success of run",
                     "type": "object",
-                    "$ref": "#/definitions/artifact"
+                    "$ref": "#/definitions/action"
                 }
             },
-            "required": [ "artifacts" ]
+            "required": [ "actions" ]
         },
-        "artifact": {
+        "action": {
             "type": "object",
             "properties": {
                 "host": {
-                    "description": "Name of the host on which the artifact is run; if no host is defined for artifact, it runs on default host; if no default host is defined in Devopsfile, the invoker of the Devopsfile or the particular operation may determine where to run the artifact (e.g., on localhost, in a sandbox, etc.)",
+                    "description": "Name of the host on which the action is run; if no host is defined for action, it runs on default host; if no default host is defined in Devopsfile, the invoker of the Devopsfile or the particular operation may determine where to run the action (e.g., on localhost, in a sandbox, etc.)",
                     "type": "string"
                 },
                 "runner": {
-                    "description": "Name of the runner to be used to run the artifact",
+                    "description": "Name of the runner to be used to run the action",
                     "type": "string"
                 },
                 "comment": {
-                    "description": "Comment on the artifact",
+                    "description": "Comment on the action",
                     "type": "string"
                 },
                 "config": {
-                    "description": "Artifact-specific configuration; it gets merged with the global and operation-specific configuration",
+                    "description": "Action-specific configuration; it gets merged with the global and operation-specific configuration",
                     "type": "object"
                 },
                 "mergeconfig": {
-                    "description": "Indicator whether the artifact-specific configuration should be merged with the gobal and operation-specific configuration; implicitly true by default",
+                    "description": "Indicator whether the action-specific configuration should be merged with the gobal and operation-specific configuration; implicitly true by default",
                     "type": "boolean"
                 },
                 "prerun": {
-                    "description": "Some JavaScript code to be executed before running the artifact, e.g., to transform configuration parameters",
+                    "description": "Some JavaScript code to be executed before running the action, e.g., to transform configuration parameters",
                     "type": "array",
                     "items": { "type": "string" },
                     "minItems": 1
                 },
                 "postrun": {
-                    "description": "Some JavaScript code to be executed after running the artifact",
+                    "description": "Some JavaScript code to be executed after running the action",
                     "type": "array",
                     "items": { "type": "string" },
                     "minItems": 1

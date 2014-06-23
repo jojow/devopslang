@@ -6,7 +6,7 @@
 
     "operations": {
         "build": {
-            "artifacts": {
+            "actions": {
                 "install-deps": {
                     "runner": "command-runner",
                     "comment": "Node.js 0.10 or better must be installed",
@@ -17,7 +17,7 @@
             }
         },
         "start": {
-            "artifacts": {
+            "actions": {
                 "chatapp": {
                     "runner": "command-runner",
                     "comment": "Node.js 0.10 or better must be installed",
@@ -28,7 +28,7 @@
             }
         },
         "deploy": {
-            "artifacts": {
+            "actions": {
                 "build-app": {
                     "runner": "operation-runner",
                     "config": {

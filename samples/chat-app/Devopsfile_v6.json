@@ -6,7 +6,7 @@
 
     "operations": {
         "build": {
-            "artifacts": {
+            "actions": {
                 "get-app": {
                     "runner": "command-runner",
                     "comment": "git must be installed",
@@ -34,7 +34,7 @@
             ]
         },
         "test": {
-            "artifacts": {
+            "actions": {
                 "unit-tests": {
                     "runner": "command-runner",
                     "config": {
@@ -44,7 +44,7 @@
             }
         },
         "start": {
-            "artifacts": {
+            "actions": {
                 "chatapp": {
                     "runner": "command-runner",
                     "config": {
@@ -64,7 +64,7 @@
             ]
         },
         "deploy": {
-            "artifacts": {
+            "actions": {
                 "deploy-git": {
                     "runner": "chef-solo-runner",
                     "config": {
